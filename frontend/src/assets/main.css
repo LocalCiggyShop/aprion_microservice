@@ -1,0 +1,86 @@
+@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  /* padding: 2rem; */
+
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: var(--primary-colour);
+  transition: 0.4s;
+}
+
+/* .primary-btn {
+  /* border-radius: 3px;
+  width: 80px;
+  padding: 3px;
+  color: white;
+  background-color: var(--primary-colour);
+  border: 3px solid var(--color-border); */
+  /* border-radius: 5px;
+  border:1px solid #b79033;
+  background:linear-gradient( #fde7ae,#f3c451);
+  color: black; */
+/* } */ 
+.disabled {
+  /* background-color: black; */
+  color: var(--primary-btn-colour);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid var(--color-border);
+  background: rgba(90, 90, 90, 0.65)
+}
+
+.primary-btn{
+  color: var(--primary-btn-colour);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid var(--color-border);
+  background: var(--primary-colour-gradient);
+}
+
+.primary-btn:hover{
+  cursor: pointer;
+}
+
+.primary-btn img{
+  max-height:20px;
+  
+}
+.primary-btn span{
+  font-family: Helvetica, sans-serif;
+  line-height:44px;
+  /* margin-left:10px; */
+  color:black;
+}
+/* 
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+} */
