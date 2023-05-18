@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="disabled ? 'disabled outer' : 'primary-btn outer'"
+    :class="disabled ? 'disabled outer' : `${themes[theme]} outer`"
   >
     <span v-if="label">{{ label }}</span>
     <span v-if="loading" class="spinner"></span>

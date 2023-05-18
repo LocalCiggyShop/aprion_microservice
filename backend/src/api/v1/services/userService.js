@@ -10,7 +10,15 @@ const getById = async (id) => Promise.resolve(await prisma.user.findUnique({ whe
   .finally(async () => {
     await prisma.$disconnect();
   })));
-const getByUser = async (name, email) => Promise.resolve(await prisma.user.findFirst({ where: { OR: [{ name: String(name) }, { email: String(email) }] }})
+const getByEmail = async (name, email) => Promise.resolve(await prisma.user.findFirst({ where: { OR: [{ name: String(name) }, { email: { equals: String(email), mode: "insensitive" } }] }})
+  .finally(async () => {
+    await prisma.$disconnect();
+  }));
+const getByName = async (name) => Promise.resolve(await prisma.user.findFirst({ where: { name: String(name) }})
+  .finally(async () => {
+    await prisma.$disconnect();
+  }));
+const getUserByPassword = async (name, password) => Promise.resolve(await prisma.user.findFirst({ where: { OR: [{ name: String(name) }, { password: String(password) }] }})
   .finally(async () => {
     await prisma.$disconnect();
   }));
@@ -58,6 +66,8 @@ const createUser = async (username, email, password) => {
 export default {
   getById,
   getAll,
-  getByUser,
-  createUser
+  getByEmail,
+  createUser,
+  getUserByPassword,
+  getByName
 };

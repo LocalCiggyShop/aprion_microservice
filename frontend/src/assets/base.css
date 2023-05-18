@@ -1,4 +1,24 @@
 /* color palette from <https://github.com/vuejs/theme> */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: theme(colors.blue.600);
+    --color-secondary: theme(colors.gray.600);
+    --color-success: theme(colors.green.600);
+    --color-danger: theme(colors.red.600);
+    --color-warning: theme(colors.yellow.600);
+
+    --color-primary-hover: theme(colors.blue.800);
+    --color-secondary-hover: theme(colors.gray.800);
+    --color-success-hover: theme(colors.green.800);
+    --color-danger-hover: theme(colors.red.800);
+    --color-warning-hover: theme(colors.yellow.800);
+  }
+}
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -38,20 +58,20 @@
   --section-gap: 160px;
 }
 
-:root {
+/* :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
 
-  /* --color-border: var(--vt-c-divider-light-2); */
-  /* --color-border: var(rgba(4, 209, 4, 0.233)); */
-  /* --color-border-hover: var(--vt-c-divider-light-1); */
+  --color-border: var(--vt-c-divider-light-2);
+  --color-border: var(rgba(4, 209, 4, 0.233));
+  --color-border-hover: var(--vt-c-divider-light-1);
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {

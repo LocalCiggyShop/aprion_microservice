@@ -23,42 +23,78 @@ MainRegister.post("/", async(req, res) => {
         const Password = params.password
         if(!Password) return res.status(201).send({ msg: 'Please enter a password'})
 
-        if(Username.length > 50 || Password.length > 120) return res.status(401).send({ msg: 'Username or password has exceeded the limit.'})
-        //if(Username.length <= 3 || Password.length <= 10) return res.status(401).send({ msg: 'Username or password is under the limit.'})
+        if(Username.length > 50
+            || Username.length <= 0
+            || Password.length <= 0
+            || Password.length > 120) return res.status(201).send({ msg: 'Username or password has exceeded the limit.'})
         if(Username && Password) {
-            userService.getByUser(Username)
-            .then(async data => {
-                // Success
-                if(data) {
-                    if(data.name === Username) {
-                        hashedPassword = await argon2.hash(Password, {type: argon2.argon2id});
+            try {
+                const dataRetrieved = await userService.getByName(Username)
 
-                        argon2
-                        .verify(Username, Password)
-                        .then(argon2 => {
-                            if(argon2) {
+                if(dataRetrieved) {
+                    if(dataRetrieved.name === Username) {
+                        try {
+                            const argonHashSuccess = await argon2.verify(dataRetrieved.password, Password)
+                            if(argonHashSuccess) 
                                 return res.status(201).send({ msg: 'You have logged in.'})
-                            }
-                        })
-                        .catch(err => {
+                            
+                            return res.status(201).send({ msg: 'Email or password is incorrect.'})
+                        } catch (err) {
                             console.log(err);
-                            return false;
-                        })
+                            return res.status(201).send({ msg: 'An Error has occured.'})
+                        }
+                        // .then(argonHashSuccess => {
+                        //     if(argonHashSuccess) {
+                        //         return res.status(201).send({ msg: 'You have logged in.'})
+                        //     } else {
+                        //         return res.status(201).send({ msg: 'Email or password is incorrect.'})
+                        //     }
+                        // })
+                        // .catch(err => {
+                            // console.log(err);
+                            // return res.status(201).send({ msg: 'An Error Occured.'})
+                        // })
                     }
                 }
-                else {
-                    return res.status(201).send({ msg: 'Email or password is incorrect.'})
-                }
-            })
-            .catch(err => {
-                // Error
-                return console.log(err)
-                //throw new Error(err);
-            });
+
+                return res.status(201).send({ msg: 'Email or password is incorrect.'})
+            } catch (error) {
+                console.log(error)
+                return res.status(201).send({ msg: 'Email or password is incorrect.'})
+            }
+
+            // .then(async data => {
+            //     // Success
+            //     if(data) {
+            //         if(data.name === Username) {
+            //             await argon2
+            //             .verify(data.password, Password)
+            //             .then(argonHashSuccess => {
+            //                 if(argonHashSuccess) {
+            //                     return res.status(201).send({ msg: 'You have logged in.'})
+            //                 } else {
+            //                     return res.status(201).send({ msg: 'Email or password is incorrect.'})
+            //                 }
+            //             })
+            //             .catch(err => {
+            //                 console.log(err);
+            //                 return res.status(201).send({ msg: 'An Error Occured.'})
+            //             })
+            //         }
+            //     } else {
+            //         return res.status(201).send({ msg: 'Email or password is incorrect.'})
+            //     }
+            // })
+            // .catch(err => {
+            //     // Error
+            //     console.log(err)
+            //     return res.status(201).send({ msg: 'An Error Occured.'})
+            //     //throw new Error(err);
+            // });
         }
-    } catch(_) {
-        console.log(_)
-        return false
+    } catch(err) {
+        console.log(err)
+        return res.status(201).send({ msg: 'An Error Occured.'})
     }
 });
 

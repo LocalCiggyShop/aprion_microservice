@@ -9,8 +9,11 @@ import cors from 'cors';
 // import fs from 'fs';
 import rateLimit from 'express-rate-limit';
 //import os from 'os';
+
 import helmet from 'helmet'
 import { fileURLToPath } from 'url';
+// import Redisclient from './src/api/v1/services/redisService.js';
+// import { createClient } from 'redis';
 //import cluster from 'cluster';
 
 app.use(express.json());
@@ -18,6 +21,20 @@ app.enable("trust proxy", 0);
 app.disable('x-powered-by');
 app.use(helmet());
 app.use(cors());
+
+// Redis cache Initialisation
+// const REDIS_CLIENT = createClient();
+// const REDIS_CLIENT = createClient({
+//     url: 'redis://alice:foobared@awesome.redis.server:6380'
+// });
+// REDIS_CLIENT.on('error', err => 
+//     console.log('Redis Client Error', err)
+// );
+
+// await REDIS_CLIENT.connect();
+// await REDIS_CLIENT.set('key', 'value');
+// const value = await REDIS_CLIENT.get('key');
+// await REDIS_CLIENT.disconnect();
 
 const apiLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -46,6 +63,7 @@ if (process.env.NODE_ENV !== 'production') {
 // Middlewares
 // app.use(middlewares())
 app.use(apiLimiter);
+// app.use(Redisclient.default);
 
 // Nginx uses /api/v1
 app.use('/', index);

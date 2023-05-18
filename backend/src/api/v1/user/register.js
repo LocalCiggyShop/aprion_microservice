@@ -49,7 +49,7 @@ MainRegister.post("/", async(req, res) => {
             if(functions.hasWhiteSpace(Username) || functions.hasWhiteSpace(Password) || functions.hasWhiteSpace(Email))
                 return res.status(201).send({ msg: "Dont have white spaces."});
 
-            userService.getByUser(Username, Email)
+            await userService.getByEmail(Username, Email)
             .then(async data => {
                 // Success
                 if(data) {
@@ -64,9 +64,11 @@ MainRegister.post("/", async(req, res) => {
                     }
                 }
                 else {
-                    const hashedPassword = await argon2.hash(Password, {type: argon2.argon2id});
+                    const hashedPassword = await argon2.hash(Password, 
+                        {type: argon2.argon2id}
+                    );
                     
-                    userService.createUser(Username, Email, hashedPassword, res)
+                    await userService.createUser(Username, Email, hashedPassword, res)
                     .then(_ => {
                         console.timeEnd("Pinged");
 
