@@ -7,7 +7,7 @@
  * 
  */
 
-function checkInvalid(req, res, /*allowedStrings = []*/) {
+function checkInvalid(req, res, inDepthChecking = false /*allowedStrings = []*/) {
     try {
         //let array = new Array(allowedStrings.length);
         let ret = true;
@@ -18,25 +18,27 @@ function checkInvalid(req, res, /*allowedStrings = []*/) {
             return;
         }
         
-        try {
-            Object.keys(value).forEach(function(i) {
-                if(/*value[i] == array[i] && */hasWhiteSpace(value[i]))
-                    {
-                        res.status(201).send({ msg: "Dont have white spaces."});
-                        ret = false;
-                        return;
-                    }
-                
-                if(!checkIfAlphanumericString(value[i]))
-                    {
-                        res.status(201).send({ msg: "Only Alphabetic letters are allowed."});
-                        ret = false;
-                        return;
-                    }
-            })
-        } catch(_) {
-            ret = false;
-            return;
+        if(!inDepthChecking) {
+            try {
+                Object.keys(value).forEach(function(i) {
+                    if(/*value[i] == array[i] && */hasWhiteSpace(value[i]))
+                        {
+                            res.status(201).send({ msg: "Dont have white spaces."});
+                            ret = false;
+                            return;
+                        }
+                    
+                    if(!checkIfAlphanumericString(value[i]))
+                        {
+                            res.status(201).send({ msg: "Only Alphabetic letters are allowed."});
+                            ret = false;
+                            return;
+                        }
+                })
+            } catch(_) {
+                ret = false;
+                return;
+            }
         }
 
         return ret;

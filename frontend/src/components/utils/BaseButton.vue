@@ -1,30 +1,33 @@
 <template>
   <div
-    :class="disabled ? 'disabled outer' : `${themes[theme]} outer`"
+    :class="disabled ? `${themes[theme]} disabled outer` : `${themes[theme]} outer`"
+    @click="Clicked"
   >
     <span v-if="label">{{ label }}</span>
     <span v-if="loading" class="spinner"></span>
-    <!-- <span>
-      <slot>
-        {{ label }}
-      </slot>
-    </span> -->
   </div>
 </template>
+<!-- <span>
+  <slot>
+    {{ label }}
+  </slot>
+</span> -->
+
+
 <!-- @click.native="clicked" -->
 
 <!-- :class="[
       disabled ? "disabled" : themes[theme], 
       // {'disabled': disabled},
       'outer'
-    ]" -->
+    ]" text-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 bg-primary hover:bg-primaryHover -->
 <script>
 export default {
   data() {
     return {
       themes: {
         primary: 'primary-btn',
-        // danger: 'danger-btn'
+        danger: 'danger-btn'
       }
     }
   },
@@ -44,6 +47,10 @@ export default {
       type: String,
       default: () => 'primary',
     },
+    to: {
+      required: false,
+      type: String,
+    },
     disabled: {
       required: false,
       type: Boolean,
@@ -52,19 +59,27 @@ export default {
   },
   // computed: {
   //   isDisabled() {
-  //     return this.heal_used === 1 || this.diff < 10;
-  //   },
-  // }
-  // methods: {
-  //   clicked(e) {
   //     console.log(this.disabled)
-  //     if(this.disabled) {
-  //       return;
-  //     }
-
-  //     this.$emit('click', e);
-  //   }
-  // }
+  //     if(this.loading)
+  //       return false;
+  //     else 
+  //       return true;
+  //   },
+  // },
+  methods: {
+    Clicked(e) {
+      this.disabled ?? e.preventDefault();
+      (this.to) ? this.$router.push({ path: this.to}) : null
+      // if(this.disabled) {
+      //   console.log("Cooldown applied")
+      //   return false;
+      // }
+      // else if(!this.disabled) {
+      //   return true;
+      //   // this.$emit('click', e);
+      // }
+    }
+  }
 }
 </script>
 <!-- 
@@ -94,25 +109,26 @@ export default {
 </script> -->
     
 <style scoped>
-.outer {
+/* .outer {
   max-width: 200px;
   max-height: 35px;
   display: block;
   font-size: small;
   text-align: center;
   margin: 0 auto 2rem;
-}
+} */
 .outer:hover {
   opacity: 0.9;
+  cursor: pointer;
 }
 
 .outer:active {
   opacity: 0.6;
 }
-
+/* 
 .outer span {
   line-height: 2;
-}
+} */
 .spinner {
     display: inline-block;
     margin: 0 6px;

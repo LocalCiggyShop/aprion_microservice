@@ -45,7 +45,7 @@
   --primary-colour: hsla(160, 100%, 37%, 1);
   --primary-colour-gradient: linear-gradient( #e0fdae,#aff351);
   --color-background: var(--vt-c-white);
-  --primary-btn-colour: rgb(40, 40, 40);
+  --primary-btn-colour: rgb(152, 152, 152);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
 

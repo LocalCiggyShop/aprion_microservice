@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
     res.status(201)
-        res.json({
-            health: "OK"
+        .json({
+            message: "SUCCESS"
         });
 });
 router.use("/blogs", blogsRoute);

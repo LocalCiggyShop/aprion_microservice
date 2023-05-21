@@ -1,11 +1,10 @@
 import express from "express";
 import userService from "../services/userService.js";
 import functions from "../utils/functions.js";
-import isAuthorised from "../utils/middleware/auth.js";
 import RedisClient from "../services/redisService.js";
 const MainAll = express.Router();
 
-MainAll.get("/:name/:method?", isAuthorised.isAuthorised, async (req, res) => {
+MainAll.get("/:name/:method?", async (req, res) => {
   try {
     const params = req.params;
     //const allParams = params.name || params.method
@@ -31,7 +30,7 @@ MainAll.get("/:name/:method?", isAuthorised.isAuthorised, async (req, res) => {
             });
         } else {
             // await RedisClient.disconnect();
-            return res.status(201).send(redislocal);
+            return res.status(201).json(JSON.parse(redislocal));
         }
 
         break;

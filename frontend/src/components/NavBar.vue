@@ -1,3 +1,22 @@
+<script setup>
+import BaseButton from './utils/BaseButton.vue';
+
+// // Grab HTML Elements
+// const btn = document.getElementById('mobile-hamburger')
+// const menu = document.querySelector(".mobile-menu");
+
+// // Add Event Listeners
+// btn.addEventListener("click", () => {
+//     console.log("dsad")
+// 	menu.classList.toggle("hidden");
+// });
+
+</script>
+
+<!-- <BaseButton to="/create-blog" theme="primary" label="Get Started" type="button"
+                    class="text-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 bg-primary hover:bg-primaryHover">
+                    Get started</BaseButton> -->
+
 <template>
     <nav class="bg-white border-gray-200 dark:bg-gray-900">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -6,11 +25,10 @@
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Aprion</span>
             </RouterLink>
             <div class="flex md:order-2">
-                <button type="button"
-                    class="text-white font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 bg-primary hover:bg-primaryHover">
-                    Get started</button>
+                <BaseButton to="/createblog" theme="primary" label="Get Started" type="button"
+                    >Get started</BaseButton>
                 <button data-collapse-toggle="navbar-cta" type="button"
-                    class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    id="mobile-hamburger" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                     aria-controls="navbar-cta" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
@@ -21,7 +39,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
+        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
                 <ul
                     class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                     <li>
@@ -47,6 +65,15 @@
                         Blogs
                     </RouterLink>
                 </li>
+            </ul>
+        </div>
+        <!-- Mobile menu -->
+        <div class="hidden mobile-menu">
+            <ul class="">
+                <li class="active"><a href="index.html" class="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</a></li>
+                <li><a href="#services" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Services</a></li>
+                <li><a href="#about" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">About</a></li>
+                <li><a href="#contact" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</a></li>
             </ul>
         </div>
     </div>

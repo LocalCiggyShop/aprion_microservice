@@ -2,6 +2,7 @@
 import { reactive, computed } from 'vue';
 import BaseInput from './utils/BaseInput.vue';
 import axios from 'axios';
+import form_header from '../components/Form/form_header.vue'
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength, minLength, email } from "@vuelidate/validators";
 import BaseButton from './utils/BaseButton.vue';
@@ -12,7 +13,8 @@ const formData = reactive({
   email: "",
   showMsg: false,
   text: "",
-  btnLoading: false
+  btnLoading: false,
+  statusClass: "error"
 })
 
 const rules = computed(() => {
@@ -54,7 +56,7 @@ const submitForm = async () => {
   }
 
   if (result) {
-    axios.post(`http://localhost:3001/v1/user/register`, params, { 
+    axios.post(`${import.meta.env.VITE_BASE_SERVER_URL}/v1/user/register`, params, { 
       timeout: 5000,
       headers:{
         contentType:'multipart/form-data'
@@ -65,7 +67,14 @@ const submitForm = async () => {
         formData.btnLoading = false;
         // console.log(formData.text)
         formData.showMsg = true;
-        formData.text = doc.data.msg;
+        if(doc.data.msg === "SUCCESS") {
+          formData.statusClass = "success"
+          formData.text = "You have logged in!"
+        }
+        else {
+          formData.statusClass = "error"
+          doc.data.msg == "" ? formData.text = doc.data : formData.text = doc.data.msg
+        }
         
         // console.log(doc.data.msg);
       })
@@ -73,8 +82,6 @@ const submitForm = async () => {
         formData.btnLoading = false;
         formData.showMsg = true;
         formData.text = "An error has occured.";
-        //this.data = response.data.name;
-        // console.log(err.message)
         return console.error("An error has occured.")
       })
   } else {
@@ -88,16 +95,13 @@ const submitForm = async () => {
 <template>
 
 <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img class="w-8 h-8 mr-2" src="../assets/logo.png" alt="logo">
-          aprion    
-      </a>
+      <form_header />
       <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign up for an account
               </h1>
-              <div class="error" v-if="formData.showMsg"> 
+              <div :class="formData.statusClass" v-if="formData.showMsg"> 
                 {{ formData.text }} 
               </div>
               <form class="space-y-4 md:space-y-6" @submit.prevent="submitForm">
@@ -112,7 +116,7 @@ const submitForm = async () => {
                         <span class="error" v-for="error in v$.email.$errors" :key="error.$uid">{{ error.$message }} <br></span>
                     </div>
                   <div>
-                      <BaseInput v-model="formData.password" label="Enter Password" />
+                      <BaseInput type="password" v-model="formData.password" label="Enter Password" />
                       <span class="error" v-for="error in v$.password.$errors" :key="error.$uid">{{ error.$message }} <br></span>
                       <!-- <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label> -->
                       <!-- <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""> -->
@@ -128,10 +132,10 @@ const submitForm = async () => {
                       </div>
                       <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                   </div>
-                  <BaseButton @click="submitForm" theme="primary" :disabled="formData.btnLoading" :loading="formData.btnLoading" label="Login" />
+                  <BaseButton @click="submitForm" theme="primary" :disabled="formData.btnLoading" :loading="formData.btnLoading" label="Register" />
                   <!-- <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button> -->
                   <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                      If you have an account <a href="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a>
                   </p>
               </form>
           </div>
@@ -174,13 +178,6 @@ const submitForm = async () => {
     display: flex;
     align-items: center;
   }
-}
-.error {
-  border-radius: 5px;
-  top: 7px;
-  border: 1px solid rgba(255, 63, 63, 0.872);
-  background-color: rgba(252, 70, 70, 0.341);
-  padding: 5px;
 }
 </style>
 <!-- <script>

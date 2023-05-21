@@ -68,7 +68,7 @@ MainRegister.post("/", async(req, res) => {
                         {type: argon2.argon2id}
                     );
                     
-                    await userService.createUser(Username, Email, hashedPassword, res)
+                    await userService.createUser(Username, Email, hashedPassword)
                     .then(_ => {
                         console.timeEnd("Pinged");
 

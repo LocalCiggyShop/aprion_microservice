@@ -3,6 +3,7 @@ const MainRegister = express.Router();
 import argon2 from "argon2";
 import functions from "../utils/functions.js";
 import userService from '../services/userService.js';
+import auth_handlers from '../handlers/auth_handlers.js';
 //import os from "os";
 //const cluster = require("cluster");
 
@@ -29,14 +30,35 @@ MainRegister.post("/", async(req, res) => {
             || Password.length > 120) return res.status(201).send({ msg: 'Username or password has exceeded the limit.'})
         if(Username && Password) {
             try {
-                const dataRetrieved = await userService.getByName(Username)
+                const user = await userService.getByName(Username)
 
-                if(dataRetrieved) {
-                    if(dataRetrieved.name === Username) {
+                if(user) {
+                    if(user.name === Username) {
                         try {
-                            const argonHashSuccess = await argon2.verify(dataRetrieved.password, Password)
-                            if(argonHashSuccess) 
-                                return res.status(201).send({ msg: 'You have logged in.'})
+                            const argonHashSuccess = await argon2.verify(user.password, Password)
+                            if(argonHashSuccess) {
+                                const userObj = {
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email
+                                }
+                                
+                                const handler = await auth_handlers.create_token(userObj);
+                                
+                                if(handler) {
+                                    // console.log("token: ", token, "signature: ",signature)
+                                    
+                                    return res.status(201).send({ 
+                                        msg: 'SUCCESS',
+                                        id: user.id,
+                                        name: user.name,
+                                        email: user.email,
+                                        accessToken: handler.token,
+                                        signature: handler.signature
+                                    })
+                                }
+                                return res.status(201).send({ msg: 'An Error has occured.'})
+                            }
                             
                             return res.status(201).send({ msg: 'Email or password is incorrect.'})
                         } catch (err) {

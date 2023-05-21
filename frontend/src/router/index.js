@@ -31,16 +31,37 @@ const router = createRouter({
     {
       path: '/blogs',
       name: 'blogs',
-      component: () => import('../views/Blogs.vue'),
+      component: () => import('../views/Blog/Blogs.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/createblog',
       name: 'createblog',
-      component: () => import('../views/CreateBlog.vue'),
+      component: () => import('../views/Blog/CreateBlog.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/deleteblog',
+      name: 'deleteblog',
+      component: () => import('../views/Blog/DeleteBlog.vue'),
+      meta: { requiresAdmin: false }
     }
   ]
+})
+
+// Temporary
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if(!user)
+      next('/login');
+    else 
+      next();
+  } else if(to.matched.some(record => record.meta.requiresAdmin)) {
+    next('/login');
+  }
+  else 
+    next();
 })
 
 // router.beforeEach((to, from, next) => {
@@ -59,7 +80,8 @@ const router = createRouter({
 
 // router.beforeEach((to, from, next) => {
 //   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (isAuthenticated()) {
+//     if (1) {
+//       console.log("next")
 //       next()
 //     }
 //     else {
@@ -68,5 +90,10 @@ const router = createRouter({
 //     }
 //   }
 // })
+
+// beforeRouteLeave (to, from) {
+//   const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+//   if (!answer) return false
+// }
 
 export default router

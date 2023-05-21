@@ -2,6 +2,7 @@
 import { reactive, computed } from 'vue';
 import BaseInput from './utils/BaseInput.vue';
 import axios from 'axios';
+import form_header from '../components/Form/form_header.vue'
 import useVuelidate from "@vuelidate/core";
 import { required, maxLength, minLength/*, email*/ } from "@vuelidate/validators";
 import BaseButton from './utils/BaseButton.vue';
@@ -11,7 +12,8 @@ const formData = reactive({
   password: "",
   showMsg: false,
   text: "",
-  btnLoading: false
+  btnLoading: false,
+  statusClass: "error"
 })
 
 const rules = computed(() => {
@@ -44,8 +46,7 @@ const submitForm = async () => {
   formData.btnLoading = true;
 
   if (result) {
-    console.log("Form has submitted!")
-    axios.post(`http://localhost:3001/v1/user/login`, params, { timeout: 5000,
+    axios.post(`${import.meta.env.VITE_BASE_SERVER_URL}/v1/user/login`, params, { timeout: 5000,
       headers:{
         contentType:'multipart/form-data'
       },
@@ -53,13 +54,22 @@ const submitForm = async () => {
       .then(doc => {
         // window.location.href="/";
         formData.btnLoading = false;
-
         formData.showMsg = true;
-        formData.text = doc.data.msg;
+        console.log(doc.data)
+
+        if(doc.data.msg === "SUCCESS") {
+          formData.statusClass = "success"
+          // DO NOT USE LOCAL STORAGE IN PRODUCTION
+          localStorage.setItem("user", JSON.stringify(doc.data));
+          formData.text = "You have logged in!"
+          // this.$router.push('/blogs');
+        }
+        else {
+          formData.statusClass = "error"
+          doc.data.msg == "" ? formData.text = doc.data : formData.text = doc.data.msg
+        }
       })
       .catch(_ => {
-        console.log(formData.btnLoading)
-
         formData.btnLoading = false;
         formData.showMsg = true;
         formData.text = "An error has occured.";
@@ -86,16 +96,13 @@ const submitForm = async () => {
   Centered using Tailwind Flex
 </div> -->
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img class="w-8 h-8 mr-2" src="../assets/logo.png" alt="logo">
-          aprion    
-      </a>
+      <form_header />
       <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
               </h1>
-              <div class="error" v-if="formData.showMsg"> 
+              <div :class="formData.statusClass" v-if="formData.showMsg"> 
                 {{ formData.text }} 
               </div>
               <form class="space-y-4 md:space-y-6" @submit.prevent="submitForm">
@@ -106,7 +113,7 @@ const submitForm = async () => {
                       <!-- <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required=""> -->
                   </div>
                   <div>
-                      <BaseInput v-model="formData.password" label="Enter Password" />
+                      <BaseInput type="password" v-model="formData.password" label="Enter Password" />
                       <span class="error" v-for="error in v$.password.$errors" :key="error.$uid">{{ error.$message }} <br></span>
                       <!-- <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label> -->
                       <!-- <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""> -->
@@ -125,7 +132,7 @@ const submitForm = async () => {
                   <BaseButton @click="submitForm" theme="primary" :disabled="formData.btnLoading" :loading="formData.btnLoading" label="Login" />
                   <!-- <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button> -->
                   <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                      Don’t have an account yet? <a href="/register" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                   </p>
               </form>
           </div>
@@ -142,20 +149,3 @@ const submitForm = async () => {
     <BaseButton @click="submitForm" :loading="false" label="Login" />
   </form> -->
 </template>
-
-<style>
-/* @media (min-width: 1024px) {
-  .Login {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-} */
-.error {
-  border-radius: 5px;
-  top: 7px;
-  border: 1px solid rgba(255, 63, 63, 0.872);
-  background-color: rgba(252, 70, 70, 0.341);
-  padding: 5px;
-}
-</style>
